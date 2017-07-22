@@ -80,10 +80,12 @@ fi
 echo "-----> compiling with make ..."
 make SHARED=0 CC='gcc -static' CXX='g++ -static' -j4 | indent
 make install
-cp $HOME/xapian/lib/xapian-omega/bin/omega $HOME/omega.cgi
-strip $HOME/omega.cgi
+cp $HOME/xapian/lib/xapian-omega/bin/omega $HOME/app/omega.cgi
+strip $HOME/app/omega.cgi
 cd ../../..
 rm -rf $BUILD_DIR
 
+ls $HOME
+ls $HOME/app
 cd $HOME
 rm -rf $HOME/xapian
