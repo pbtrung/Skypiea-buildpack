@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+# bin/compile <build-dir> <cache-dir>
+
+set -e
+set -o pipefail
+
+BUILD_DIR=$1
+CACHE_DIR=$2
+BUILDPACKS_DIR=$(dirname $(dirname $0))
+
+function indent() {
+  sed -u 's/^/       /'
+}
+
+error() {
+  echo " !     $*" >&2
+  exit 1
+}
+
+cd $BUILD_DIR
+
+PCRE_VERSION=8.41
+PCRE_TARBALL="${BUILDPACKS_DIR}/vendor/pcre-${PCRE_VERSION}.tar.gz"
+if [[ ! -f $PCRE_TARBALL ]] ; then
+  ls ${BUILDPACKS_DIR}/vendor
+  error "Could not find the PCRE libary"
+fi
+mkdir -p pcre
+tar -m --directory pcre -zxf $PCRE_TARBALL
+
+cd pcre/pcre-${PCRE_VERSION}
+if [[ -f configure ]] ; then
+  echo "-----> configuring ..."
+  ./configure --prefix=$HOME/xapian --enable-static --enable-shared=no | indent
+fi
+
+echo "-----> compiling with make ..."
+make SHARED=0 CC='gcc -static' CXX='g++ -static' -j4 | indent
+make install
+cd ../..
+
+
+XAPIAN_VERSION=1.4.4
+XAPIAN_TARBALL="${BUILDPACKS_DIR}/vendor/xapian-core-${XAPIAN_VERSION}.tar.gz"
+if [[ ! -f $XAPIAN_TARBALL ]] ; then
+  ls ${BUILDPACKS_DIR}/vendor
+  error "Could not find the xapian-core libary"
+fi
+mkdir -p xapian-core
+tar -m --directory xapian-core -zxf $XAPIAN_TARBALL
+
+cd xapian-core/xapian-core-${XAPIAN_VERSION}
+if [[ -f configure ]] ; then
+  echo "-----> configuring ..."
+  ./configure --prefix=$HOME/xapian --enable-static --enable-shared=no | indent
+fi
+
+echo "-----> compiling with make ..."
+make SHARED=0 CC='gcc -static' CXX='g++ -static' -j4 | indent
+make install
+cd ../..
+
+
+OMEGA_VERSION=1.4.4
+OMEGA_TARBALL="${BUILDPACKS_DIR}/vendor/xapian-omega-${OMEGA_VERSION}.tar.gz"
+if [[ ! -f $OMEGA_TARBALL ]] ; then
+  ls ${BUILDPACKS_DIR}/vendor
+  error "Could not find the xapian-omega libary"
+fi
+mkdir -p xapian-omega
+tar -m --directory xapian-omega -zxf $OMEGA_TARBALL
+
+cd xapian-omega/xapian-omega-${OMEGA_VERSION}
+if [[ -f configure ]] ; then
+  echo "-----> configuring ..."
+  ./configure --prefix=$HOME/xapian --enable-static --enable-shared=no XAPIAN_CONFIG=$HOME/xapian/bin/xapian-config LIBS='-L$HOME/xapian/lib -l:libpcre.a' \ 
+  | indent
+fi
+
+echo "-----> compiling with make ..."
+make SHARED=0 CC='gcc -static' CXX='g++ -static' -j4 | indent
+make install
+cp $HOME/xapian/lib/xapian-omega/bin/omega $HOME/omega.cgi
+strip $HOME/omega.cgi
+cd ../../..
+rm -rf $BUILD_DIR
+
+cd $HOME
+rm -rf $HOME/xapian
