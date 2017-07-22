@@ -84,6 +84,7 @@ cp $BUILD_DIR/xapian/lib/xapian-omega/bin/omega $BUILD_DIR/omega.cgi
 strip $BUILD_DIR/omega.cgi
 cd ../..
 
+rm -rf xapian
 rm -rf file
 rm -rf xapian-core
 rm -rf xapian-omega
