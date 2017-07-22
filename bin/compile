@@ -36,7 +36,7 @@ if [[ -f configure ]] ; then
 fi
 
 echo "-----> compiling with make ..."
-make SHARED=0 CC='gcc -static' CXX='g++ -static' -j4 | indent
+make SHARED=0 CC='gcc -static -std=c99' CXX='g++ -static' -j4 | indent
 make install
 cd ../..
 
