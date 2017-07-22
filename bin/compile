@@ -20,6 +20,27 @@ error() {
 cd $BUILD_DIR
 
 
+FILE_VERSION=5.31
+FILE_TARBALL="${BUILDPACKS_DIR}/vendor/file-${FILE_VERSION}.tar.gz"
+if [[ ! -f $FILE_TARBALL ]] ; then
+  ls ${BUILDPACKS_DIR}/vendor
+  error "Could not find the file/libmagic libary"
+fi
+mkdir -p file
+tar -m --directory file -zxf $FILE_TARBALL
+
+cd file/file-${FILE_VERSION}
+if [[ -f configure ]] ; then
+  echo "-----> configuring ..."
+  ./configure --prefix=$HOME/xapian --enable-static --enable-shared=no | indent
+fi
+
+echo "-----> compiling with make ..."
+make SHARED=0 CC='gcc -static' CXX='g++ -static' -j4 | indent
+make install
+cd ../..
+
+
 XAPIAN_VERSION=1.4.4
 XAPIAN_TARBALL="${BUILDPACKS_DIR}/vendor/xapian-core-${XAPIAN_VERSION}.tar.gz"
 if [[ ! -f $XAPIAN_TARBALL ]] ; then
@@ -53,7 +74,7 @@ tar -m --directory xapian-omega -zxf $OMEGA_TARBALL
 cd xapian-omega/xapian-omega-${OMEGA_VERSION}
 if [[ -f configure ]] ; then
   echo "-----> configuring ..."
-  ./configure --prefix=$HOME/xapian --enable-static --enable-shared=no XAPIAN_CONFIG=$HOME/xapian/bin/xapian-config | indent
+  ./configure --prefix=$HOME/xapian --enable-static --enable-shared=no XAPIAN_CONFIG=$HOME/xapian/bin/xapian-config LIBS='-L$HOME/xapian/lib -l:libmagic.a' | indent
 fi
 
 echo "-----> compiling with make ..."
