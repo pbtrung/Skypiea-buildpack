@@ -78,7 +78,7 @@ if [[ -f configure ]] ; then
 fi
 
 echo "-----> compiling with make ..."
-make SHARED=0 CC='gcc -static' CXX='g++ -static' -j4 -L/home/vcap/xapian/lib -I/home/vcap/xapian/include | indent
+make SHARED=0 CC='gcc -static' CXX='g++ -static' -j4 | indent
 make install
 cp $HOME/xapian/lib/xapian-omega/bin/omega $HOME/omega.cgi
 strip $HOME/omega.cgi
