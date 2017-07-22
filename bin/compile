@@ -19,26 +19,6 @@ error() {
 
 cd $BUILD_DIR
 
-PCRE_VERSION=8.41
-PCRE_TARBALL="${BUILDPACKS_DIR}/vendor/pcre-${PCRE_VERSION}.tar.gz"
-if [[ ! -f $PCRE_TARBALL ]] ; then
-  ls ${BUILDPACKS_DIR}/vendor
-  error "Could not find the PCRE libary"
-fi
-mkdir -p pcre
-tar -m --directory pcre -zxf $PCRE_TARBALL
-
-cd pcre/pcre-${PCRE_VERSION}
-if [[ -f configure ]] ; then
-  echo "-----> configuring ..."
-  ./configure --prefix=$HOME/xapian --enable-static --enable-shared=no | indent
-fi
-
-echo "-----> compiling with make ..."
-make SHARED=0 CC='gcc -static' CXX='g++ -static' -j4 | indent
-make install
-cd ../..
-
 
 XAPIAN_VERSION=1.4.4
 XAPIAN_TARBALL="${BUILDPACKS_DIR}/vendor/xapian-core-${XAPIAN_VERSION}.tar.gz"
