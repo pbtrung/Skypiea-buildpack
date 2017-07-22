@@ -53,8 +53,7 @@ tar -m --directory xapian-omega -zxf $OMEGA_TARBALL
 cd xapian-omega/xapian-omega-${OMEGA_VERSION}
 if [[ -f configure ]] ; then
   echo "-----> configuring ..."
-  ./configure --prefix=$HOME/xapian --enable-static --enable-shared=no XAPIAN_CONFIG=$HOME/xapian/bin/xapian-config LIBS='-L$HOME/xapian/lib -l:libpcre.a' \ 
-  | indent
+  ./configure --prefix=$HOME/xapian --enable-static --enable-shared=no XAPIAN_CONFIG=$HOME/xapian/bin/xapian-config | indent
 fi
 
 echo "-----> compiling with make ..."
