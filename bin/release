@@ -3,5 +3,5 @@
 
 cat << EOF
 default_process_types:
-    web: /home/vcap/app/caddy
+    web: ./caddy
 EOF
