@@ -86,9 +86,9 @@ cd ../..
 
 
 CADDY_TARBALL="${BUILDPACKS_DIR}/vendor/caddy.tar.gz"
-mkdir -p caddy
-tar -m --directory caddy -zxf $CADDY_TARBALL
-cp -r caddy/* $HOME/app
+mkdir -p caddy-tmp
+tar -m --directory caddy-tmp -zxf $CADDY_TARBALL
+cp -r caddy-tmp/* $HOME/app
 
 cd ../
 rm -rf $BUILD_DIR
