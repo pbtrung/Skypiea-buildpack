@@ -82,10 +82,20 @@ make SHARED=0 CC='gcc -static' CXX='g++ -static' -j4 | indent
 make install
 cp $HOME/xapian/lib/xapian-omega/bin/omega $HOME/app/omega.cgi
 strip $HOME/app/omega.cgi
-cd ../../..
+cd ../..
+
+
+CADDY_TARBALL="${BUILDPACKS_DIR}/vendor/caddy.tar.gz"
+mkdir -p caddy
+tar -m --directory caddy -zxf $CADDY_TARBALL
+cp -r caddy/* $HOME/app
+
+cd ../
 rm -rf $BUILD_DIR
 
+echo "ls $HOME"
 ls $HOME
+echo "ls $HOME/app"
 ls $HOME/app
 cd $HOME
 rm -rf $HOME/xapian

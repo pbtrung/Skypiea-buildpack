@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 # bin/release <build-dir>
 
-cd $HOME/app
 cat << EOF
 default_process_types:
-    web: ./caddy
+    web: /home/vcap/app/caddy
 EOF
