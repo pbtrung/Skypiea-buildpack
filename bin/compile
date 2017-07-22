@@ -88,10 +88,3 @@ rm -rf xapian
 rm -rf file
 rm -rf xapian-core
 rm -rf xapian-omega
-
-echo "ls $BUILD_DIR"
-ls $BUILD_DIR
-echo "ls $HOME"
-ls $HOME
-echo "ls $HOME/app"
-ls $HOME/app
