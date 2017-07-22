@@ -32,7 +32,7 @@ tar -m --directory file -zxf $FILE_TARBALL
 cd file/file-${FILE_VERSION}
 if [[ -f configure ]] ; then
   echo "-----> configuring ..."
-  ./configure --prefix=$HOME/xapian --enable-static --enable-shared=no | indent
+  ./configure --prefix=$BUILD_DIR/xapian --enable-static --enable-shared=no | indent
 fi
 
 echo "-----> compiling with make ..."
@@ -53,7 +53,7 @@ tar -m --directory xapian-core -zxf $XAPIAN_TARBALL
 cd xapian-core/xapian-core-${XAPIAN_VERSION}
 if [[ -f configure ]] ; then
   echo "-----> configuring ..."
-  ./configure --prefix=$HOME/xapian --enable-static --enable-shared=no | indent
+  ./configure --prefix=$BUILD_DIR/xapian --enable-static --enable-shared=no | indent
 fi
 
 echo "-----> compiling with make ..."
@@ -74,24 +74,19 @@ tar -m --directory xapian-omega -zxf $OMEGA_TARBALL
 cd xapian-omega/xapian-omega-${OMEGA_VERSION}
 if [[ -f configure ]] ; then
   echo "-----> configuring ..."
-  ./configure --prefix=$HOME/xapian --enable-static --enable-shared=no XAPIAN_CONFIG=$HOME/xapian/bin/xapian-config LIBS='-L/home/vcap/xapian/lib -l:libmagic.a' | indent
+  ./configure --prefix=$BUILD_DIR/xapian --enable-static --enable-shared=no XAPIAN_CONFIG=$BUILD_DIR/xapian/bin/xapian-config LIBS='-L/tmp/staged/app/xapian/lib -l:libmagic.a' | indent
 fi
 
 echo "-----> compiling with make ..."
 make SHARED=0 CC='gcc -static' CXX='g++ -static' -j4 | indent
 make install
-cp $HOME/xapian/lib/xapian-omega/bin/omega $HOME/app/omega.cgi
-strip $HOME/app/omega.cgi
+cp $BUILD_DIR/xapian/lib/xapian-omega/bin/omega $BUILD_DIR/omega.cgi
+strip $BUILD_DIR/omega.cgi
 cd ../..
 
-
-CADDY_TARBALL="${BUILDPACKS_DIR}/vendor/caddy.tar.gz"
-mkdir -p caddy-tmp
-tar -m --directory caddy-tmp -zxf $CADDY_TARBALL
-cp -r caddy-tmp/* $HOME/app 
-
-cd ../
-#rm -rf $BUILD_DIR
+rm -rf file
+rm -rf xapian-core
+rm -rf xapian-omega
 
 echo "ls $BUILD_DIR"
 ls $BUILD_DIR
@@ -99,5 +94,3 @@ echo "ls $HOME"
 ls $HOME
 echo "ls $HOME/app"
 ls $HOME/app
-cd $HOME
-rm -rf $HOME/xapian
